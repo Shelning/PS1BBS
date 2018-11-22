@@ -1,0 +1,862 @@
+/**
+* Template Name: Spot
+* Template URL: https://templatemag.com/spot-bootstrap-freelance-template/
+* Author: TemplateMag.com
+* License: https://templatemag.com/license/
+*/
+
+body {
+  background-color: #2d2d2d;
+  font-family: "Lato";
+  font-weight: 300;
+  font-size: 16px;
+  color: #555;
+  -webkit-font-smoothing: antialiased;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 70px;
+}
+
+
+/* Titles */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Raleway";
+  font-weight: 300;
+  color: #333;
+}
+
+/* Paragraph & Typographic */
+
+p {
+  line-height: 28px;
+  margin-bottom: 25px;
+}
+
+.centered {
+  text-align: center;
+}
+
+/* Links */
+
+a {
+  color: #f85c37;
+  /* transition: color 0.1s ease-in, background 0.1s ease-in; */
+}
+
+a:hover, a:focus, a:visited {
+  color: #7b7b7b;
+  text-decoration: none;
+  outline: 0;
+}
+
+/*
+a:before, a:after {
+  transition: color 0.1s ease-in, background 0.1s ease-in;
+}
+*/
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+
+.navbar {
+  font-weight: 800;
+  font-size: 14px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.navbar-inverse {
+  background: #222222;
+  border-color: #222222;
+}
+
+.navbar-inverse .navbar-nav>.active>a {
+  background: #ff7878
+}
+
+.navbar-inverse .navbar-brand {
+  color: #999999;
+  font-weight: bolder;
+  font-size: 22px;
+  letter-spacing: 1px;
+}
+
+.navbar-inverse .navbar-brand i {
+  color: #ff7878;
+  font-size: 22px;
+  letter-spacing: 1px;
+}
+
+/*TILT*/
+
+.tilt {
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  -ms-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+.tilt:hover {
+  -webkit-transform: rotate(-10deg);
+  -moz-transform: rotate(-10deg);
+  -o-transform: rotate(-10deg);
+  -ms-transform: rotate(-10deg);
+  transform: rotate(-10deg);
+}
+
+/* ==========================================================================
+   Wrap Sections
+   ========================================================================== */
+
+#headerwrap {
+  background: url() no-repeat center top;
+  /*margin-top: -10px; */
+  /*padding-top: 20px;*/
+  text-align: center;
+  background-attachment: relative;
+  background-position: center center;
+  /* min-height: 500px; */
+  width: 100%;
+  -webkit-background-size: 100%;
+  -moz-background-size: 100%;
+  -o-background-size: 100%;
+  background-size: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+#headerwrap h1 {
+  /*margin-top: 100px;*/
+  color: black;
+  font-size: 70px;
+  font-weight: 300;
+  letter-spacing: 3px;
+}
+
+#headerwrap h2 {
+  color: white;
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px ) {
+  #headerwrap h1 {
+    font-size: 50px;
+  }
+
+  #headerwrap h2 {
+    font-size: 30px;
+  }
+}
+
+.banner img {
+    width: 100%; /* 横幅100%　*/
+}
+
+#posted-img {
+    max-width: 100%;
+    height: auto;
+}
+#posted-video {
+    max-width: 100%;
+    height: auto;
+}
+
+
+/* Dark Grey Wrap */
+
+#dg {
+  margin: 0 20% 0 20%;
+  background: #e0e0e0;
+  padding-top: 30px;
+  text-align: center;
+}
+
+#dg h4 {
+  font-size: 225%;
+  font-weight: 700;
+  text-align: center;
+}
+
+.about {
+    width: 60%;
+    min-width: 960px;
+    height: 100%;
+    background: #e0e0e0;
+    padding: 30px 20px;
+    /*margin: 10% auto;*/
+    margin: 50vh auto 0;
+    transform: translateY(-50%);
+    text-align: center;
+}
+
+.main {
+    width: 50%;
+    min-width: 960px;
+    height: auto;
+    background: #e0e0e0;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    margin:auto;
+}
+.main h2 {
+    font-family: "Raleway";
+    font-weight: 300;
+    color: #333;
+    text-align: left;
+    padding: 0 20px;
+}
+.float-container{
+    border: none;
+    min-height: 100%;
+    overflow: hidden;
+}
+.float-container:after{
+      content: "";
+      display: block;
+      clear: both;
+}
+.h2h2 {
+    text-align: center;
+    font-weight: bold;
+}
+.login-container {
+    float: left;
+    width: 34.5%;
+    height: auto;
+    margin-left: 15%;
+    background: #e0e0e0;
+    padding: 30px;
+    text-align: left;
+    padding-bottom: 32767px;
+    margin-bottom: -32767px;
+}
+.signup-container {
+    float: right;
+    width: 34.5%;
+    height: auto;
+    margin-right: 15%;
+    background: #e0e0e0;
+    padding: 30px;
+    text-align: left;
+    padding-bottom: 32767px;
+    margin-bottom: -32767px;
+}
+
+.top-main {
+    width: 69%;
+    height: 100%;
+    margin-left: 15.5%;
+    background: #e0e0e0;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: left;
+}
+.float-container2{
+    border: none;
+    min-height: 100%;
+    overflow: hidden;
+    margin: 10px;
+}
+.float-container2:after{
+      content: "";
+      display: block;
+      clear: both;
+}
+
+
+
+#text {
+    text-align: left;
+    padding: 0 20px;
+    font-size: 16pt;
+}
+.uploaded-file{
+    text-align: left;
+    padding: 0 20px;
+}
+
+
+.comment {
+    margin: 5px 40px 5px 20px;
+}
+
+table {
+  text-align: center;
+  width: 95%;
+  margin: 10px 2.5%;
+  border: 1px solid #aaa; /*solid=一本線*/
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 6px; /*角丸*/
+  overflow: hidden;
+}
+
+table thead th,
+table thead td,
+table tbody th,
+table tbody td {
+    vertical-align: middle;
+}
+
+table thead th,
+table tbody th {
+    width: 10%;
+    text-align: center;
+    background-color: #393f4c
+}
+
+.tag {
+    width: 20%;
+    padding-left: 20px;
+    text-align: left;
+}
+
+.username {
+    width: 50%;
+    text-align: left;
+
+}
+
+table thead td {
+    text-align: left;
+}
+
+.title {
+    padding-left: 20px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 16pt;
+}
+
+table tbody td {
+    text-align: left;
+}
+
+.comment-table table {
+  text-align: center;
+  width: 95%;
+  margin: 10px 2.5%;
+  border: 1px none #aaa; /*solid=一本線*/
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 6px; /*角丸*/
+  overflow: hidden;
+}
+.comment-table h4 {
+    font-family: "Raleway";
+    font-weight: 300;
+    color: white;
+    text-align: center;
+    padding: 0 20px;
+}
+.comment-table table thead th {
+    width: 50%;
+    text-align: center;
+    background-color: #393f4c
+}
+.comment-table table tbody td div {
+    text-align: left;
+    margin-left: 20px;
+}
+.comment-table table tbody td {
+    vertical-align: baseline;
+    text-align: left;
+}
+.no-comment {
+    padding-top: 20px;
+}
+.posted-comment {
+    font-size: 18px;
+}
+.posted-comment table {
+  text-align: left;
+  width: 95%;
+  margin: 10px 2.5%;
+  border: 1px none #aaa; /*solid=一本線*/
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 6px; /*角丸*/
+  overflow: hidden;
+}
+.posted-comment-comment {
+    padding-left: 20px;
+}
+
+.top-main table {
+  width: 60%;
+  margin: 10px 20%;
+  border-style: none;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 6px; /*角丸*/
+  overflow: hidden;
+}
+.top-main table tbody th {
+    width: auto;
+    text-align: right;
+    background-color: inherit;
+}
+.top-main table tbody td {
+    padding-left: 30px;
+}
+
+
+/*
+table thead th,
+table tbody td,
+table tbody th,
+table tbody td {
+  padding: .6em 3em;
+  border-bottom: 1px solid #aaa;
+}
+table thead th {
+  background-color: #ddd;
+}
+table tbody th {
+  background-color: #eee;
+}
+table thead th + th,
+table tbody td {
+  border-left: 1px solid #aaa;
+}
+table tbody tr:last-child th,
+table tbody tr:last-child td {
+  border-bottom: none;
+}
+*/
+
+.primary-height {
+    height: 40px;
+}
+
+.footer-height {
+    height: 10px;
+}
+
+/* Light Grey */
+
+#lg {
+  background: #ebebeb;
+  padding-top: 70px;
+  padding-bottom: 70px;
+  text-align: center;
+}
+
+#lg h4 {
+  font-weight: 700;
+}
+
+/* Red Wrap */
+
+#r {
+  background: #ff7878;
+  padding-top: 35px;
+  padding-bottom: 35px;
+}
+
+#r h4 {
+  color: white;
+  font-weight: 700;
+}
+
+#r p {
+  color: white;
+}
+
+/* Blue Wrap */
+
+#blue {
+  background: #3498db;
+  padding-top: 35px;
+  padding-bottom: 35px;
+}
+
+#blue h4 {
+  color: white;
+  font-weight: 700;
+}
+
+#blue p {
+  color: white;
+}
+
+/* Footer Wrap */
+
+#f {
+  background: #2d2d2d;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+#f i {
+  color: #bdbdbd;
+  font-size: 30px;
+  padding: 20px;
+}
+
+#f i:hover {
+  color: #ff7878;
+}
+
+/****** SECTIONS *****/
+
+.w {
+  padding-top: 35px;
+}
+
+.w h4 {
+  font-weight: 700;
+}
+
+.w i {
+  color: #ff7878;
+  font-size: 30px;
+}
+
+.wb {
+  padding-top: 35px;
+  margin-bottom: 0px;
+}
+
+.wb h4 {
+  font-weight: 700;
+}
+
+.desc {
+  padding-top: 35px;
+}
+
+.desc h4 {
+  font-weight: 700;
+}
+
+.desc i {
+  color: #ff7878;
+  font-size: 12px;
+  padding: 5px;
+}
+
+/***** MODAL CONTACT *****/
+
+.modal-content {
+  border-radius: 0px;
+}
+
+.modal-header {
+  background: #bdbdbd;
+  color: white;
+}
+
+.modal-header h4 {
+  font-weight: 700;
+}
+
+.modal-body {
+  background: #f2f2f2;
+  font-family: "Lato";
+  font-weight: 300;
+  font-size: 16px;
+  color: #555;
+}
+
+.modal-footer {
+  background: #f2f2f2;
+  margin-top: 0px;
+}
+
+/* ==========================================================================
+   Pricing Tables
+   ========================================================================== */
+
+.pricing-option {
+  padding-bottom: 40px;
+}
+
+.pricing-option .pricing-top {
+  position: relative;
+  background: #222;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  padding: 40px 20px 30px 20px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.pricing-option .pricing-top .special-label {
+  display: block;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #1abc9c;
+  text-transform: uppercase;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 3px 0;
+}
+
+.special .pricing-top {
+  background: black;
+}
+
+.pricing-option .pricing-edition {
+  text-transform: uppercase;
+  display: block;
+  font-size: 25px;
+  letter-spacing: 8px;
+}
+
+.pricing-option .price {
+  display: inline-block;
+  position: relative;
+}
+
+.pricing-option .price sup {
+  position: absolute;
+  top: 50px;
+  left: -10px;
+  font-size: 24px;
+}
+
+.pricing-option .price .price-amount {
+  font-size: 108px;
+  letter-spacing: -4px;
+}
+
+.pricing-option .price small {
+  position: relative;
+  left: -10px;
+  font-size: 18px;
+}
+
+.pricing-option ul {
+  list-style: none;
+  margin: 0;
+  background: #eee;
+  text-align: center;
+  padding-left: 0px;
+}
+
+.pricing-option ul li {
+  border-bottom: solid 1px #e1e1e1;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.pricing-option .pricing-signup {
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 10px;
+  color: white;
+  background: #1abc9c;
+}
+
+.pricing-option .pricing-signup:hover {
+  background: #ff7878;
+}
+
+/* Contact Form */
+
+.contact-form {
+  text-align: left;
+  padding: 0 15px;
+}
+
+.contact-form label {
+   color: #999;
+}
+
+.post-form {
+    text-align: left;
+    padding-left: 20px;
+    width: 90%;
+}
+.post-form h3 {
+    font-family: "Lato";
+    font-weight: 300;
+    font-size: 16px;
+    color: #555;
+}
+.text-input {
+    padding: 0.5em 0em;
+    width: 90%;
+    text-indent: 1em;
+}
+.text-input-2 {
+    padding: 0.5em 0em;
+    width: 100%;
+    text-indent: 1em;
+}
+.radio-button {
+    padding: 0.5em 0em;
+}
+.post-form textarea {
+    padding: 0.5em 1em;
+    width: 90%;
+}
+#condition {
+    padding-left: 16pt;
+    font-size: 12pt;
+}
+.post-form select {
+    padding: 0.5em 1em;
+    width: 30%;
+}
+.submit {
+    text-align: center;
+}
+.submit input {
+    margin-bottom: 15pt;
+    padding: 5pt 10pt;
+}
+.errorMessage {
+    color: red;
+    text-align: center;
+}
+.successMessage {
+    color: blue;
+    text-align: center;
+}
+#comment-submit {
+    text-align: right;
+    margin-bottom: 15pt;
+    margin-left: 40%;
+    padding: 5pt 10pt;
+}
+
+
+
+
+.contact-form input, .contact-form textarea {
+  padding: 10px 12px;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 14px;
+  height: auto;
+}
+
+.contact-form .form-send {
+  text-align: center;
+}
+
+.contact-form .form-send button  {
+  background: #d9534f;
+  border: 0;
+  padding: 10px 30px;
+  color: #fff;
+  transition: 0.4s;
+  cursor: pointer;
+}
+
+.contact-form .form-send button:hover {
+  background: #e65f5b;
+}
+
+.contact-form .validate {
+  display: none;
+  color: red;
+  margin: 0 0 15px 0;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.contact-form .loading {
+  display: none;
+  color: #555;
+  background: #fff;
+  text-align: center;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.contact-form .loading:before {
+  content: "";
+  display: inline-block;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  border: 3px solid #18d26e;
+  border-top-color: #eee;
+  -webkit-animation: animate-loading 1s linear infinite;
+  animation: animate-loading 1s linear infinite;
+}
+
+@-webkit-keyframes animate-loading {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animate-loading {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.contact-form .error-message {
+  display: none;
+  color: #fff;
+  background: #ed3c0d;
+  text-align: center;
+  padding: 15px;
+  font-weight: 600;
+  margin: 15px 0;
+}
+
+.contact-form .sent-message {
+  display: none;
+  color: #fff;
+  background: #18d26e;
+  text-align: center;
+  padding: 15px;
+  font-weight: 600;
+  margin: 15px 0;
+}
+
+/* Copyrights */
+#footer {
+
+}
+
+#copyrights {
+  background: #222222;
+  padding: 20px 0;
+  text-align: center;
+  color: #fff;
+}
+
+#copyrights p {
+  margin-bottom: 5px;
+}
+
+.credits {
+  color: #999;
+}
