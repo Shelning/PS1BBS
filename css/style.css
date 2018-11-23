@@ -295,7 +295,7 @@ hr {
 table {
   text-align: center;
   width: 95%;
-  margin: 10px 2.5%;
+  margin: 10px auto;
   border: 1px solid #aaa; /*solid=一本線*/
   border-collapse: separate;
   border-spacing: 0;
@@ -342,6 +342,7 @@ table thead td {
 
 table tbody td {
     text-align: left;
+    vertical-align: middle;
 }
 
 .comment-table table {
@@ -366,17 +367,64 @@ table tbody td {
     text-align: center;
     background-color: #393f4c
 }
-.comment-table table tbody td div {
+
+.comment-container {
+    width: 95%;
+    margin: 0 auto;
+    border: none;
+    min-height: 100%;
+    overflow: hidden;
+}
+.comment-container:after{
+      content: "";
+      display: block;
+      clear: both;
+}
+.comment-left {
+    float: left;
+    width: 50%;
+    height: auto;
+    margin: 0;
+    padding: 10px 25px;
+    text-align: left;
+    font-size: 18px;
+    padding-bottom: 32767px;
+    margin-bottom: -32767px;
+}
+.comment-right {
+    float: right;
+    width: 50%;
+    height: auto;
+    margin: 0;
+    padding: 10px 25px;
+    text-align: left;
+    padding-bottom: 32767px;
+    margin-bottom: -32767px;
+}
+
+.comment-left table {
+
+    text-align: left;
+    border-style: none;
+}
+.comment-left table tbody td div {
     text-align: left;
     margin-left: 20px;
 }
-.comment-table table tbody td {
+.comment-left table tbody td {
     vertical-align: baseline;
     text-align: left;
 }
 .no-comment {
     padding-top: 20px;
+    text-align: center;
 }
+.comment-delete {
+    padding: 0;
+    font-size: 12px;
+}
+
+
 .posted-comment {
     font-size: 18px;
 }
