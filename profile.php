@@ -11,6 +11,7 @@ if (!isset($_SESSION["name"])) {
 
 // エラーメッセージ、成功メッセージの初期化
 $errorMessage = "";
+$errorMessage2 = "";
 $successMessage = "";
 
 //半角英数字をそれぞれ1種類以上含む8文字以上100文字以下の正規表現
