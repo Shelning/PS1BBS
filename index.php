@@ -167,7 +167,7 @@ try {
                 <tr>
                   <th><i class="fas fa-thumbs-up"></i> <i class="fas fa-thumbs-down"></i></th>
                   <td class="tag"><i class="fas fa-tag"></i> 議論</td>
-                  <td class="username"><i class="fas fa-user"></i> seagwa</td>
+                  <td class="username"><i class="fas fa-user"></i> segawa</td>
                   <td><i class="fas fa-clock"></i> 2018/11/18 以下不明</td>
                 </tr>
               </thead>
