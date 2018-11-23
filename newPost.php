@@ -77,7 +77,7 @@ try {
 					//ファイルを特定のフォルダへ移動
 					if (move_uploaded_file($_FILES["upfile"]["tmp_name"], "files/" . $filename)) {
 						if ("$mime" === "video/mp4") { //動画のとき
-							$format = '<video  id="posted-video" src="../files/%s" controls autoplay></video>' ;
+							$format = '<video  id="posted-video" src="../files/%s" controls autoplay muted></video>' ;
 						} else { //画像のとき
 							$format = '<img id="posted-img" src="../files/%s">' ;
 						}

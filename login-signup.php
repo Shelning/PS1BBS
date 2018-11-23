@@ -19,6 +19,9 @@ $pattern = '/\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,100}+\z/i';
 // エラーメッセージ、登録完了メッセージの初期化
 $errorMessage = "";
 
+//前のページのURL
+$referer = $_SERVER['HTTP_REFERER'];
+
 try {
 
 	$pdo = new PDO($dsn, $db[user], $db[pass]);
@@ -52,8 +55,19 @@ try {
 
 					//セッション変数=ページが遷移しても維持される変数(ブラウザを閉じると破棄)
 					$_SESSION["name"] = $username;
-					header("Location: index.php");
-					exit(1); //上で他のページへ飛んでいるので、ここで処理を終わらせておく
+
+					//プロフィールページから飛んできた場合
+					if ($referer === "http://tt-576.99sv-coco.com/PS1BBS/profile.php") {
+						header("Location: profile.php");
+						exit(1); //上で他のページへ飛んでいるので、ここで処理を終わらせておく
+					//投稿ごとのページから飛んできた場合
+					} elseif (strpos($referer, "http://tt-576.99sv-coco.com/PS1BBS/posts/") !== false) {
+						header("Location: " . $referer);
+						exit(1);
+					} else {
+						header("Location: index.php");
+						exit(1);
+					}
 				} else {
 					//認証失敗
 					$errorMessage2 = "パスワードが間違っています";

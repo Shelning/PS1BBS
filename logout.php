@@ -14,6 +14,9 @@ $_SESSION = array();
 
 //セッションクリア
 session_destroy();
+
+//クッキーIDのクリア
+setcookie(session_name(), '', time()-42000, '/');
 ?>
 
 

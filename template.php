@@ -14,6 +14,7 @@ try {
 
     try {
 
+        //コメント投稿
         if (!empty($_POST["submit"])) { //送信ボタンが押されたら
 
 			if (empty($_POST["text"])) {
@@ -37,6 +38,13 @@ try {
             $sql = "update post set rating=rating+'$rating' where id='$pageID'";
             $result = $pdo->query($sql);
 
+        }
+        //コメント投稿終了
+
+        //コメント削除
+        if (!empty($_POST["comment_delete"])) {
+            $sql = "delete from comment WHERE id = $_POST[id]" ;
+    		$result = $pdo -> query($sql);
         }
 
     } catch (RuntimeException $e) {
@@ -153,77 +161,86 @@ try {
                         <th><h4>コメントする</h4></th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="posted-comment">
-
-                                <?php
-                                $sql = "SELECT COUNT(*) FROM comment WHERE pageID = '$pageID'" ;
-                                $count = (int)$pdo->query($sql)->fetchColumn(); //コメント数をカウント
-
-                                if ($count === 0) {
-                                    echo '<div class="no-comment">' . "まだコメントがありません" . '</div>';
-                                } else {
-                                    $sql = "SELECT * FROM comment WHERE pageID = '$pageID' ORDER BY id DESC" ;
-                                    $results = $pdo -> query($sql) ;
-                                    foreach ($results as $row) {
-                                        $comment = h($row['text']);
-                                        $comment = nl2br($comment);
-                                        // echo $row['id'].',' ;
-                                        // echo $row['pageID'].',';
-                                        echo '<table><tbody><tr><td>' . h($row['user']) . '</td>';
-                                        echo '<td>' . $row['datetime'] . '</td></tr></tbody>';
-                                        echo '<tbody><tr><td colspan="2" class="posted-comment-comment">' . $comment . '</td></tr></tbody></table>';
-                                    }
-                                }
-                                ?>
-
-                                <!--
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td>しょーま</td>
-                                            <td>2018-11-18 23:15:20</td>
-                                        </tr>
-                                    </tbody>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="2" class="posted-comment-comment">heyhey<br>heheheh</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            -->
-
-                            </div>
-                        </td>
-                        <td>
-                            <?php
-                              if (isset($_SESSION["name"])) { ?>
-                            	<form action="" method="post" enctype="multipart/form-data">
-                                    <div class="post-form">
-                            		     <h3>コメント*</h3>
-                            			 <textarea name="text" cols="40" rows="4" required></textarea>
-                            		</div>
-                                    <div class="post-form">
-                            		     <h3>評価*</h3>
-                            			 <input class="radio-button" type="radio" name="rating" value="1" required> 高評価
-                                         <br>
-                            			 <input class="radio-button" type="radio" name="rating" value="-1"> 低評価
-                            		</div>
-                                    <div class="errorMessage"><font color="red"><?php echo h($errorMessage); ?></font></div>
-                            		<div class="submit"><input type="submit" name="submit" value="送信"></div>
-                            	</form>
-                            <?php
-                              } else { ?>
-                                  <div class="no-comment">
-                                      <div class="submit">コメントするには<a href="../login.php">ログイン</a>か<a href="../signup.php">新規登録</a></div>
-                                  </div>
-                            <?php } ?>
-                        </td>
-                    </tr>
-                </tbody>
             </table>
+        </div>
+
+        <div class="comment-container">
+            <div class="comment-left">
+                <?php
+                $sql = "SELECT COUNT(*) FROM comment WHERE pageID = '$pageID'" ;
+                $count = (int)$pdo->query($sql)->fetchColumn(); //コメント数をカウント
+
+                if ($count === 0) {
+                    echo '<div class="no-comment">' . "まだコメントがありません" . '</div>';
+                } else {
+                    $sql = "SELECT * FROM comment WHERE pageID = '$pageID' ORDER BY id DESC" ;
+                    $results = $pdo -> query($sql) ;
+                    foreach ($results as $row) {
+
+                        //コメントのエスケープ
+                        $comment = h($row['text']);
+                        $comment = nl2br($comment);
+
+                        // echo $row['id'].',' ;
+                        // echo $row['pageID'].',';
+                        echo '<table><tbody><tr><td>' . h($row['user']) . '</td>';
+                        echo '<td>' . $row['datetime'] . '</td></tr></tbody>';
+                        echo '<tbody><tr><td colspan="2" class="posted-comment-comment">' . $comment;
+                        if (h($row['user']) === $username) {
+                            $id = $row['id'];
+                            ?><span class="comment-delete">
+                                <form action="" method="post">
+                                    <!-- 見えないPOST -->
+                                    <input type="hidden" name="id" value="<?php echo $id; ?>">
+                                    <input type="submit" name="comment_delete" value="[削除] (即座に削除されます)">
+                                </form>
+                              </span>
+                            <?php
+                            }
+                        echo '</td></tr></tbody></table>';
+                    }
+                }
+                ?>
+                    <!--
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>しょーま</td>
+                                <td>2018-11-18 23:15:20</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" class="posted-comment-comment">heyhey<br>heheheh</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    -->
+            </div>
+            <div class="comment-right">
+                <?php
+                  if (isset($_SESSION["name"])) { ?>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        <div class="post-form">
+                             <h3>コメント*</h3>
+                             <textarea name="text" cols="40" rows="4" required></textarea>
+                        </div>
+                        <div class="post-form">
+                             <h3>評価*</h3>
+                             <input class="radio-button" type="radio" name="rating" value="1" required> 高評価
+                             <br>
+                             <input class="radio-button" type="radio" name="rating" value="-1"> 低評価
+                        </div>
+                        <div class="errorMessage"><font color="red"><?php echo h($errorMessage); ?></font></div>
+                        <div class="submit"><input type="submit" name="submit" value="送信"></div>
+                    </form>
+                <?php
+                  } else { ?>
+                      <div class="no-comment">
+                          <div class="submit">コメントするには<a href="../login-signup.php">ログインか新規登録</a></div>
+                      </div>
+                <?php } ?>
+            </div>
         </div>
 
     </div>
