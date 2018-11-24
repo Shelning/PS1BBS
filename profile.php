@@ -8,7 +8,6 @@ if (!isset($_SESSION["name"])) {
 	exit(1);
 }
 
-
 // エラーメッセージ、成功メッセージの初期化
 $errorMessage = "";
 $errorMessage2 = "";
@@ -50,7 +49,6 @@ try {
 
 				if ($count > 0 and $username !== $newname) { //重複かつ違うユーザー名を指定した場合
 					$errorMessage2 = 'そのユーザー名は既に使用されています';
-					$_POST["edit01"] = array(1);
 				} else {
 					// 編集させる
 					$sql = "update users set name='$newname', email='$newemail' where name='$username'";
@@ -99,6 +97,7 @@ try {
 			    //ページを遷移する場合の処理(強制ログアウト)
 				$_SESSION = array();
 				session_destroy();
+				setcookie(session_name(), '', time()-42000, '/');
 				echo "Your password has been properly changed!".'<br>';
 				echo "Redirecting to the login page in 5 seconds...";
 				header("refresh:5;url=login-signup.php");
@@ -185,33 +184,70 @@ try {
   </div>
 
   <div class="top-main">
-	  <h2 class="h2h2">現在の状態</h2>
-	  <table>
-	  	<tbody>
-	  		<tr>
-	  			<th><h4>ユーザー名</h4></th>
-				<td><?php echo h($username); ?></td>
-	  		</tr>
-	  	</tbody>
-		<tbody>
-			<tr>
-				<th><h4>メールアドレス</h4></th>
-				<td><?php echo h($email); ?></td>
-			</tr>
-		</tbody>
-		<tbody>
-	  		<tr>
-	  			<th><h4>パスワード</h4></th>
-				<td>******** (セキュリティのため表示されません)</td>
-	  		</tr>
-	  	</tbody>
-	  </table>
+	  <h2 class="h2h2">ログインしているアカウント</h2>
+	  <div id="top-main">
+		  <table>
+		  	<tbody>
+		  		<tr>
+		  			<th><h4>ユーザー名</h4></th>
+					<td><?php echo h($username); ?></td>
+		  		</tr>
+		  	</tbody>
+			<tbody>
+				<tr>
+					<th><h4>メールアドレス</h4></th>
+					<td><?php echo h($email); ?></td>
+				</tr>
+			</tbody>
+			<tbody>
+		  		<tr>
+		  			<th><h4>パスワード</h4></th>
+					<td>******** (セキュリティのため表示されません)</td>
+		  		</tr>
+		  	</tbody>
+		  </table>
+	  </div>
+
+	  <h4 class="top-main_a"><a href="#accountEdit">ユーザー名・メールアドレス・パスワードを変更する</a></h4>
+	  <h2 class="h2h2">これまでの投稿</h2>
+	  <?php
+		  $sql = "SELECT * FROM post WHERE user = '$username' ORDER BY id DESC" ;
+		  $results = $pdo -> query($sql) ;
+		  foreach ($results as $row) {
+			  //URLを取得
+			  $pageUrl = md5($row['title'] . $row['datetime']);
+
+			  //変数に代入
+			  $id = $row['id'];
+
+			  //その投稿に対するコメント数を取得
+			  $stmt = "SELECT COUNT(*) FROM comment WHERE pageID = '$id'" ;
+			  $count = (int)$pdo->query($stmt)->fetchColumn();
+
+			  //時刻のミリ秒を削除+形式を整える
+			  $datetime01 = explode("-", $row['datetime']); //年[0], 月[1], 日以下[2]に分割
+			  $datetime02 = explode(":", $datetime01[2]); //日+時[0], 分[1], 秒以下[2]に分割
+			  $datetimeMinute = $datetime01[0] . "/" . $datetime01[1] . "/" . $datetime02[0] . ":" . $datetime02[1];
+
+			  echo '<a href="/PS1BBS/posts/'.$pageUrl.'.php"><table><thead><tr>' ;
+			  echo '<th><i class="fas fa-thumbs-up"></i> <i class="fas fa-thumbs-down"></i></th>';
+			  echo '<td class="tag"><i class="fas fa-tag"></i> ' .  $row['label'] . '</td>';
+			  echo '<td class="username"><i class="fas fa-user"></i> ' . h($row['user']) . '</td>';
+			  echo '<td><i class="fas fa-clock"></i> ' . $datetimeMinute . '</td>';
+			  echo '</tr></thead><tbody><tr>' ;
+			  echo '<th>' . $row['rating'] . ' pt</th>'; //今の所
+			  echo '<td colspan="2" class="title"> ' . h($row['title']) . '</td>';
+			  echo '<td><i class="fas fa-comments"></i> ' . $count . '</td>';
+			  echo '</tr></tbody></table></a>';
+			  echo '<h5 class="post-delete"><a href="finalAnswer.php?id=' . $id . '">上の投稿を削除する</a></h5><br>';
+		  } ;
+	  ?>
   </div>
 
-  <div class="float-container2">
+  <div class="float-container2" id="accountEdit">
 
 	  <div class="login-container">
-		  <h2 class="h2h2">ユーザー名・メールアドレスの編集</h2>
+		  <h2 class="h2h2">ユーザー名・メールアドレスの変更</h2>
 		  メールアドレスは認証がないので、適当で大丈夫です。
 		  <form action="" method="post">
 			  <div class="post-form">
@@ -242,7 +278,7 @@ try {
 	  </div>
 
 	  <div class="signup-container">
-		  <h2 class="h2h2">パスワードの編集</h2>
+		  <h2 class="h2h2">パスワードの変更</h2>
 		  パスワードはハッシュ化されていますが、あまり安全ではありません。重要な文字列は入力しないでください。
 		  <br>
 		  パスワードは8文字以上で、半角英字と半角数字をそれぞれ最低1つ含む必要があります。

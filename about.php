@@ -8,7 +8,7 @@ $username = $_SESSION["name"];
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>ログアウト | PS1BBS</title>
+  <title>このサイトについて | PS1BBS</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <meta content="" name="keywords">
   <meta content="" name="description">

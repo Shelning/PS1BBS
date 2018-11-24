@@ -16,7 +16,7 @@ function getUnixTimeMillSecond(){
 //半角英数字をそれぞれ1種類以上含む8文字以上100文字以下の正規表現
 $pattern = '/\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,100}+\z/i';
 
-// エラーメッセージ、登録完了メッセージの初期化
+// エラーメッセージの初期化
 $errorMessage = "";
 
 //前のページのURL
@@ -28,28 +28,40 @@ try {
 
 	//ログイン機構
 	if (isset($_POST["login"])) { // ログインボタンが押された場合
-		//空欄チェック
-		//必ずサーバー側でチェックする
-	    if (empty($_POST["username2"])) {
-			$errorMessage2 = 'ユーザーネームを入力してください';
-		} elseif (empty($_POST["password"])) {
-			$errorMessage2 = 'パスワードを入力してください';
-		}
 
-		if (!empty($_POST["username2"]) and !empty($_POST["password"])) {
-	        // 入力したユーザネーム、パスワードを格納
-	        $username = $_POST["username2"];
-	        $password = $_POST["password"];
-			$hashpass = hash("sha256", $password);
+		try {
 
-            $sql = "SELECT * FROM users WHERE name = '$username'";
-            $row = $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
-
-			if ($row === false) { //等しく同じ型であるとき
-				//該当データなし
-				$errorMessage2 = "ユーザー名が間違っているか、登録されていません";
+			//空欄チェック
+			//必ずサーバー側でチェックする
+		    if (empty($_POST["username2"])) {
+				throw new RuntimeException("ユーザー名 または メールアドレスを入力してください");
+			} elseif (empty($_POST["password"])) {
+				throw new RuntimeException("パスワードを入力してください");
 			} else {
-				if ($hashpass == $row['password']) {
+		        // 入力したユーザネームorメールアドレス、パスワードを格納
+		        $username = $_POST["username2"];
+		        $password = $_POST["password"];
+				$hashpass = hash("sha256", $password);
+
+				//指定されたユーザー名が存在するかどうか
+	            $sql = "SELECT * FROM users WHERE name = '$username'";
+	            $row = $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+
+				//指定されたメールアドレスが存在するかどうか
+	            $sql = "SELECT * FROM users WHERE email = '$username'";
+	            $row2 = $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+
+				if ($row !== false) { //ユーザー名があってる場合
+					$correctPass = $row['password'];
+				} elseif ($row2 !== false) { //メールアドレスがあってる場合
+					$username = $row2["name"]; //変数を正しくユーザー名に変える
+					$correctPass = $row2['password'];
+				} elseif ($row === false && $row2 === false) {
+					//該当データなし
+					throw new RuntimeException("ユーザー名 または メールアドレスが間違っているか、登録されていません");
+				}
+
+				if ($hashpass === $correctPass) {
 					//現在のセッションIDを新しく生成したものと置き換える。セキュリティ上重要
 					session_regenerate_id(true);
 
@@ -70,12 +82,15 @@ try {
 					}
 				} else {
 					//認証失敗
-					$errorMessage2 = "パスワードが間違っています";
+					throw new RuntimeException("パスワードが間違っています");
 				}
 
-			}
+		    }
 
-	    }
+		} catch (RuntimeException $e) {
+			$errorMessage2 = $e->getMessage();
+		}
+
 	}
 	//ログイン機構終わり
 
@@ -101,9 +116,16 @@ try {
 
 			//ユーザーネームの重複を確認
 			$stmt = "SELECT count(*) FROM users WHERE name = '$username'";
-			$count = (int)$pdo->query($stmt)->fetchColumn();
-			if ($count > 0) {
+			$countName = (int)$pdo->query($stmt)->fetchColumn();
+
+			//ユーザーネームの重複を確認
+			$stmt = "SELECT count(*) FROM users WHERE email = '$email'";
+			$countEmail = (int)$pdo->query($stmt)->fetchColumn();
+
+			if ($countName > 0) {
  		       $errorMessage = 'そのユーザー名は既に使用されています';
+		    } elseif ($countEmail > 0) {
+			   $errorMessage = 'そのメールアドレスは既に使用されています';
 			} else {
             	$sql = $pdo->prepare("INSERT INTO users(name, email, password) VALUES (:name, :email, :password)");
 				$sql -> bindParam(':name', $username, PDO::PARAM_STR);
@@ -203,8 +225,8 @@ try {
 			<h2 class="h2h2">ログイン</h2>
 			<form action="" method="post">
 				<div class="post-form">
-					 <h3>ユーザー名</h3>
-					 <input class="text-input-2" type="text" name="username2" placeholder="ユーザー名を入力" value="<?php if (!empty($_POST["username2"])) {echo h($_POST["username2"]);} ?>" required>
+					 <h3>ユーザー名 または メールアドレス</h3>
+					 <input class="text-input-2" type="text" name="username2" placeholder="ユーザー名 または メールアドレスを入力" value="<?php if (!empty($_POST["username2"])) {echo h($_POST["username2"]);} ?>" required>
 				</div>
 				<div class="post-form">
 					 <h3>パスワード</h3>
@@ -215,6 +237,10 @@ try {
 				<br>
 				<div class="submit"><input type="submit" id="login" name="login" value="ログイン"></div>
 			</form>
+			<a href="check.php">ユーザー名、メールアドレスまたはパスワードをどれか 1つ忘れた場合</a>
+			<br>
+			<a href="giveup.php">ユーザー名、メールアドレスまたはパスワードのどれか 2つ以上忘れた場合</a>
+			<br>
 		</div>
 
 		<div class="signup-container">
@@ -238,7 +264,7 @@ try {
 					 <input class="text-input-2" type="password" name="password" value="" placeholder="パスワードを入力" required>
 				</div>
 				<div class="post-form">
-					 <h3>確認パスワード</h3>
+					 <h3>パスワードをもう一度入力してください</h3>
 					 <input class="text-input-2" type="password" name="password2" value="" placeholder="再度パスワードを入力" required>
 				</div>
 				<br>

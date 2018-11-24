@@ -129,35 +129,35 @@ try {
         -->
 
         <?php
-        $sql = 'SELECT * FROM post ORDER BY id DESC' ;
-        $results = $pdo -> query($sql) ;
-        foreach ($results as $row) {
-            //URLを取得
-            $pageUrl = md5($row['title'] . $row['datetime']);
+            $sql = 'SELECT * FROM post ORDER BY id DESC' ;
+            $results = $pdo -> query($sql) ;
+            foreach ($results as $row) {
+                //URLを取得
+                $pageUrl = md5($row['title'] . $row['datetime']);
 
-            //変数に代入
-            $id = $row['id'];
+                //変数に代入
+                $id = $row['id'];
 
-            //その投稿に対するコメント数を取得
-            $stmt = "SELECT COUNT(*) FROM comment WHERE pageID = '$id'" ;
-            $count = (int)$pdo->query($stmt)->fetchColumn();
+                //その投稿に対するコメント数を取得
+                $stmt = "SELECT COUNT(*) FROM comment WHERE pageID = '$id'" ;
+                $count = (int)$pdo->query($stmt)->fetchColumn();
 
-            //時刻のミリ秒を削除+形式を整える
-            $datetime01 = explode("-", $row['datetime']); //年[0], 月[1], 日以下[2]に分割
-            $datetime02 = explode(":", $datetime01[2]); //日+時[0], 分[1], 秒以下[2]に分割
-            $datetimeMinute = $datetime01[0] . "/" . $datetime01[1] . "/" . $datetime02[0] . ":" . $datetime02[1];
+                //時刻のミリ秒を削除+形式を整える
+                $datetime01 = explode("-", $row['datetime']); //年[0], 月[1], 日以下[2]に分割
+                $datetime02 = explode(":", $datetime01[2]); //日+時[0], 分[1], 秒以下[2]に分割
+                $datetimeMinute = $datetime01[0] . "/" . $datetime01[1] . "/" . $datetime02[0] . ":" . $datetime02[1];
 
-        	echo '<a href="/PS1BBS/posts/'.$pageUrl.'.php"><table><thead><tr>' ;
-        	echo '<th><i class="fas fa-thumbs-up"></i> <i class="fas fa-thumbs-down"></i></th>';
-            echo '<td class="tag"><i class="fas fa-tag"></i> ' .  $row['label'] . '</td>';
-            echo '<td class="username"><i class="fas fa-user"></i> ' . h($row['user']) . '</td>';
-            echo '<td><i class="fas fa-clock"></i> ' . $datetimeMinute . '</td>';
-            echo '</tr></thead><tbody><tr>' ;
-            echo '<th>' . $row['rating'] . ' pt</th>'; //今の所
-            echo '<td colspan="2" class="title"> ' . h($row['title']) . '</td>';
-            echo '<td><i class="fas fa-comments"></i> ' . $count . '</td>';
-            echo '</tr></tbody></table></a>';
-        } ;
+            	echo '<a href="/PS1BBS/posts/'.$pageUrl.'.php"><table><thead><tr>' ;
+            	echo '<th><i class="fas fa-thumbs-up"></i> <i class="fas fa-thumbs-down"></i></th>';
+                echo '<td class="tag"><i class="fas fa-tag"></i> ' .  $row['label'] . '</td>';
+                echo '<td class="username"><i class="fas fa-user"></i> ' . h($row['user']) . '</td>';
+                echo '<td><i class="fas fa-clock"></i> ' . $datetimeMinute . '</td>';
+                echo '</tr></thead><tbody><tr>' ;
+                echo '<th>' . $row['rating'] . ' pt</th>'; //今の所
+                echo '<td colspan="2" class="title"> ' . h($row['title']) . '</td>';
+                echo '<td><i class="fas fa-comments"></i> ' . $count . '</td>';
+                echo '</tr></tbody></table></a>';
+            } ;
         ?>
 
         <!-- 消しちゃった瀬川さんの投稿 -->
