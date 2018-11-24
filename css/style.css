@@ -217,9 +217,18 @@ hr {
     text-align: left;
     padding: 0 20px;
 }
+.main h4 {
+    font-family: "Raleway";
+    font-weight: 300;
+    color: #333;
+    text-align: left;
+    padding: 0 20px;
+}
 .float-container{
     border: none;
+    width: 70%;
     min-height: 100%;
+    margin: 0 auto;
     overflow: hidden;
 }
 .float-container:after{
@@ -233,9 +242,10 @@ hr {
 }
 .login-container {
     float: left;
-    width: 34.5%;
     height: auto;
-    margin-left: 15%;
+    width: 49%;
+    margin-left: 0;
+    margin-right: auto;
     background: #e0e0e0;
     padding: 30px;
     text-align: left;
@@ -244,9 +254,10 @@ hr {
 }
 .signup-container {
     float: right;
-    width: 34.5%;
     height: auto;
-    margin-right: 15%;
+    width: 49%;
+    margin-left: auto;
+    margin-right: 0;
     background: #e0e0e0;
     padding: 30px;
     text-align: left;
@@ -255,19 +266,27 @@ hr {
 }
 
 .top-main {
-    width: 69%;
+    width: 70%;
+    min-width: 960px;
     height: 100%;
-    margin-left: 15.5%;
+    margin: 0 auto;
     background: #e0e0e0;
     padding-top: 30px;
     padding-bottom: 30px;
-    text-align: left;
+    /*text-align: left;*/
+}
+.top-main_a {
+    margin-right: 20px;
+    text-align: right;
+    font-weight: bold;
 }
 .float-container2{
     border: none;
+    width: 70%;
+    min-width: 960px;
     min-height: 100%;
+    margin: 10px auto 0 auto;
     overflow: hidden;
-    margin: 10px;
 }
 .float-container2:after{
       content: "";
@@ -423,6 +442,10 @@ table tbody td {
     padding: 0;
     font-size: 12px;
 }
+.post-delete {
+    margin-right: 10%;
+    text-align: right;
+}
 
 
 .posted-comment {
@@ -442,7 +465,7 @@ table tbody td {
     padding-left: 20px;
 }
 
-.top-main table {
+#top-main table {
   width: 60%;
   margin: 10px 20%;
   border-style: none;
@@ -451,12 +474,12 @@ table tbody td {
   border-radius: 6px; /*角丸*/
   overflow: hidden;
 }
-.top-main table tbody th {
+#top-main table tbody th {
     width: auto;
     text-align: right;
     background-color: inherit;
 }
-.top-main table tbody td {
+#top-main table tbody td {
     padding-left: 30px;
 }
 
