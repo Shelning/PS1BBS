@@ -294,7 +294,17 @@ hr {
       clear: both;
 }
 
+.user-date01 {
+    text-align: left;
+    padding-left: 60px;
+    font-size: 12pt;
+}
 
+.user-date02 {
+    text-align: left;
+    padding-left: 10px;
+    font-size: 12pt;
+}
 
 #text {
     text-align: left;
@@ -320,6 +330,12 @@ table {
   border-spacing: 0;
   border-radius: 6px; /*角丸*/
   overflow: hidden;
+}
+
+.top-main table {
+    width: 70%;
+    min-width: 912px;
+    margin: 10px auto;
 }
 
 table thead th,
@@ -443,8 +459,9 @@ table tbody td {
     font-size: 12px;
 }
 .post-delete {
-    margin-right: 10%;
+    margin-right: 15%;
     text-align: right;
+    font-size: 14px;
 }
 
 
