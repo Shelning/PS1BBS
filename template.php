@@ -1,16 +1,44 @@
 <?php
-chdir("/home/tt-576.99sv-coco.com/public_html/PS1BBS"); //ディレクトリ移動
+// chdir("/home/tt-576.99sv-coco.com/public_html/PS1BBS"); //ディレクトリ移動
 include 'database.php'; //データベース情報
 // chdir("/home/tt-576.99sv-coco.com/public_html/posts"); //元のディレクトリ
 
 $username = $_SESSION["name"];
 
-//このページのIDを置換してもらう
-$pageID = "strPageID";
+//このページのIDを取得
+$pageID = $_GET["id"];
 
 try {
 
     $pdo = new PDO($dsn, $db[user], $db[pass]);
+
+    $sql = "SELECT * FROM post WHERE id = '$pageID'";
+    $row = $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+
+    //投稿が存在する場合
+    if ($row !== false) {
+
+        $postUser = $row["user"];
+        $title = $row["title"];
+        $text = $row["text"];
+        $filename = $row["filename"];
+        $label = $row["label"];
+        $rating = $row["rating"];
+
+        //時刻のミリ秒を削除+形式を整える
+        $datetime01 = explode("-", $row['datetime']); //年[0], 月[1], 日以下[2]に分割
+        $datetime02 = explode(":", $datetime01[2]); //日+時[0], 分[1], 秒以下[2]に分割
+        $datetimeMinute = $datetime01[0] . "/" . $datetime01[1] . "/" . $datetime02[0] . ":" . $datetime02[1];
+
+        //ファイルの拡張子を調べる
+        $extensionCheck = explode(".", $filename);
+        if ($extensionCheck[1] === "mp4") {
+            $filetype = "video";
+        } else {
+            $filetype = "image";
+        }
+
+    }
 
     try {
 
@@ -61,20 +89,20 @@ try {
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title><%pageTitle> | PS1BBS</title>
+  <title><?php if ($row === false) { echo "Not Found"; } else { echo h($title); } ?> | PS1BBS</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <meta content="" name="keywords">
   <meta content="" name="description">
 
   <!-- Favicons -->
-  <link href="../img/favicon.ico" rel="icon">
-  <link href="../img/favicon.ico" rel="apple-touch-icon">
+  <link href="img/favicon.ico" rel="icon">
+  <link href="img/favicon.ico" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,900|Raleway:400,300,700,900" rel="stylesheet">
 
   <!-- Bootstrap CSS File -->
-  <link href="../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Libraries CSS Files -->
   <!---
@@ -83,10 +111,10 @@ try {
 
   <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script><script type="text/javascript" src="../js/footerFixed.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script><script type="text/javascript" src="js/footerFixed.js"></script>
 
   <!-- Main Stylesheet File -->
-  <link href="../css/style.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
 
   <!-- =======================================================
     Template Name: Spot
@@ -107,20 +135,20 @@ try {
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-          <a class="navbar-brand" href="../index.php">PlayStationの記憶</a>
+          <a class="navbar-brand" href="index.php">PlayStationの記憶</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
               <?php
                 if (isset($_SESSION["name"])) { ?>
-                    <li class="active"><a href="../newPost.php">投稿する</a></li>
-                    <li><a href="../about.php">ABOUT</a></li>
-                    <li><a href="../profile.php">PROFILE</a></li>
-                    <li><a href="../logout.php">LOGOUT</a></li>
+                    <li class="active"><a href="newPost.php">投稿する</a></li>
+                    <li><a href="about.php">ABOUT</a></li>
+                    <li><a href="profile.php">PROFILE</a></li>
+                    <li><a href="logout.php">LOGOUT</a></li>
               <?php
                 } else { ?>
-                    <li><a href="../about.php">ABOUT</a></li>
-            		  <li class="active"><a href="../login-signup.php">投稿する -> LOGIN or SIGNUP</a></li>
+                    <li><a href="about.php">ABOUT</a></li>
+            		  <li class="active"><a href="login-signup.php">投稿する -> LOGIN or SIGNUP</a></li>
               <?php } ?>
             </ul>
         </div>
@@ -136,18 +164,41 @@ try {
 
     <div class="main">
 
-        <h2><%pageTitle></h2>
+        <?php
+            if ($row === false) {
+                echo '<h2>この投稿は存在しないか、既に削除されました</h2>';
+            } else {
+        ?>
+
+        <h2><?php echo h($title); ?></h2>
+
+        <span class="user-date01">
+            <?php
+                echo '<i class="fas fa-user"></i> ';
+                echo $postUser = h($postUser);
+            ?>
+        </span>
+        <span class="user-date02">
+            <?php
+                echo '<i class="fas fa-clock"></i> ';
+                echo $datetimeMinute;
+            ?>
+        </span>
 
         <div id="text">
-            <%pageText>
+            <?php
+                $text = h($text);
+                echo $text = nl2br($text);
+            ?>
         </div>
 
         <div class="uploaded-file">
-            <?php //幅・高さを整える必要がある
-                $format = 'strFormat';
-                $filename = "strFilename";
-                //sprintf(フォーマットしたいもの, 1つ目の%sなどに入れるもの, 2つ目, etc.)
-                echo sprintf($format, $filename, $filename);
+            <?php
+                if ($filetype === "video") {
+                    echo '<video  id="posted-video" src="files/' . $filename . '" controls autoplay muted></video>';
+                } else {
+                    echo '<img id="posted-img" src="files/' . $filename . '">';
+                }
             ?>
         </div>
 
@@ -237,11 +288,13 @@ try {
                 <?php
                   } else { ?>
                       <div class="no-comment">
-                          <div class="submit">コメントするには<a href="../login-signup.php">ログインか新規登録</a></div>
+                          <div class="submit">コメントするには<a href="login-signup.php">ログインか新規登録</a></div>
                       </div>
                 <?php } ?>
             </div>
         </div>
+
+        <?php } ?>
 
     </div>
 

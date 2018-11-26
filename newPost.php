@@ -76,11 +76,7 @@ try {
 
 					//ファイルを特定のフォルダへ移動
 					if (move_uploaded_file($_FILES["upfile"]["tmp_name"], "files/" . $filename)) {
-						if ("$mime" === "video/mp4") { //動画のとき
-							$format = '<video  id="posted-video" src="../files/%s" controls autoplay muted></video>' ;
-						} else { //画像のとき
-							$format = '<img id="posted-img" src="../files/%s">' ;
-						}
+
 					} else {
 				    	throw new RuntimeException("ファイルをアップロードできませんでした");
 					}
@@ -89,20 +85,8 @@ try {
 
 			}
 
-            //変数に入れ直し
-            $title = $_POST["title"];
-			$text = $_POST["text"];
-
             //時刻を取得(マイクロ秒まで)
             $datetime = getUnixTimeMillSecond();
-
-            //投稿ごとのファイルのための下準備
-            $pageUrl = md5($title . $datetime); //タイトルと時刻でハッシュ
-            $postFilename = $pageUrl . ".php"; //新しい投稿のファイル名
-            $content = file_get_contents("template.php"); //テームレートの読み込み
-            $title = h($title); //HTML特殊文字をエスケープ
-            $text = h($text); //同上
-            $text = nl2br($text); //改行文字を変換
 
 			//データベースへの書き込み
 			$sql = $pdo -> prepare("INSERT INTO post(user, title, text, filename, thumbnail, datetime, label, rating) VALUES (:user, :title, :text, :filename, :thumbnail, :datetime, :label, :rating)") ;
@@ -115,25 +99,6 @@ try {
 			$sql -> bindValue(':label', $_POST["label"], PDO::PARAM_STR) ;
 			$sql -> bindValue(':rating', "0", PDO::PARAM_INT) ;
 			$sql -> execute() ;
-
-            //データベースから新しい投稿のIDを取得(時刻基準)
-            $sql = "SELECT * FROM post WHERE datetime = '$datetime'";
-            $row = $pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
-            $id = $row["id"];
-
-            //各種内容の置換
-            $content = str_replace("<%pageTitle>", $title, $content);
-            $content = str_replace("<%pageText>", $text, $content);
-            $content = str_replace("strFormat", $format, $content);
-            $content = str_replace("strFilename", $filename, $content);
-            $content = str_replace("strPageID", $id, $content);
-
-            //ファイル生成 & 書き込み
-			chdir("/home/tt-576.99sv-coco.com/public_html/PS1BBS/posts"); //ディレクトリ移動
-			$handle = fopen($postFilename, 'w');
-			fwrite($handle, $content);
-			fclose($handle);
-			chdir("/home/tt-576.99sv-coco.com/public_html/PS1BBS"); //元のディレクトリ
 
             header("Location: index.php");
             exit(1);

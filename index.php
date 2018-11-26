@@ -132,11 +132,10 @@ try {
             $sql = 'SELECT * FROM post ORDER BY id DESC' ;
             $results = $pdo -> query($sql) ;
             foreach ($results as $row) {
-                //URLを取得
-                $pageUrl = md5($row['title'] . $row['datetime']);
 
                 //変数に代入
                 $id = $row['id'];
+                $title = urlencode($row['title']);
 
                 //その投稿に対するコメント数を取得
                 $stmt = "SELECT COUNT(*) FROM comment WHERE pageID = '$id'" ;
@@ -147,7 +146,7 @@ try {
                 $datetime02 = explode(":", $datetime01[2]); //日+時[0], 分[1], 秒以下[2]に分割
                 $datetimeMinute = $datetime01[0] . "/" . $datetime01[1] . "/" . $datetime02[0] . ":" . $datetime02[1];
 
-            	echo '<a href="/PS1BBS/posts/'.$pageUrl.'.php"><table><thead><tr>' ;
+            	echo '<a href="/PS1BBS/template.php?id=' . $id . '&title=' . $title . '"><table><thead><tr>' ;
             	echo '<th><i class="fas fa-thumbs-up"></i> <i class="fas fa-thumbs-down"></i></th>';
                 echo '<td class="tag"><i class="fas fa-tag"></i> ' .  $row['label'] . '</td>';
                 echo '<td class="username"><i class="fas fa-user"></i> ' . h($row['user']) . '</td>';

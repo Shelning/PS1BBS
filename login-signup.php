@@ -96,19 +96,36 @@ try {
 
 	//新規登録機構
 	if (!empty($_POST["signup"])) { // 登録ボタンが押された場合
-		//空欄チェック
-		//必ずサーバー側でチェックする
+
+		//ユーザー名に @ が含まれているかどうか
+		$temp = strpos($_POST["username"], "@");
+
 		if (empty($_POST["username"])) { //ユーザーネームが空
 	        $errorMessage = 'ユーザーネームを入力してください';
-	    } else if (empty($_POST["password"])) { //パスワードが空
-	       	$errorMessage = 'パスワードを入力してください';
-	    } else if (empty($_POST["password2"])) { //確認用パスワードが空
-	        $errorMessage = '確認用パスワードを入力してください';
-	    } else if (!preg_match($pattern, $_POST["password"])) { //パスワードがパターンに一致しない場合
-	       	$errorMessage = 'パスワードは8文字以上で、半角英字と半角数字をそれぞれ最低1つ含む必要があります';
-		}
 
-	    if (!empty($_POST["username"]) and !empty($_POST["password"]) and !empty($_POST["password2"]) and $_POST["password"] == $_POST["password2"] and preg_match($pattern, $_POST["password"])) {
+		} elseif (empty($_POST["email"])) { //メールアドレスが空
+	       	$errorMessage = 'メールアドレスを入力してください';
+
+	    } elseif (empty($_POST["password"])) { //パスワードが空
+	       	$errorMessage = 'パスワードを入力してください';
+
+	    } elseif (empty($_POST["password2"])) { //確認用パスワードが空
+	        $errorMessage = '確認用パスワードを入力してください';
+
+		} elseif ($temp !== false) { //ユーザー名に @ が含まれる場合
+			$errorMessage = 'ユーザー名に @ は使えません';
+
+		} elseif (!strpos($_POST["email"], "@")) { //メールアドレスに @ が含まれない場合
+			$errorMessage = '有効なメールアドレスを入力してください';
+
+	    } elseif (!preg_match($pattern, $_POST["password"])) { //パスワードがパターンに一致しない場合
+	       	$errorMessage = 'パスワードは8文字以上で、半角英字と半角数字をそれぞれ最低1つ含む必要があります';
+
+		} elseif($_POST["password"] !== $_POST["password2"]) {
+	        $errorMessage = 'パスワードが一致しません';
+
+		} else {
+
 	        // 入力したユーザネーム、メールアドレス、パスワードを格納
 	        $username = $_POST["username"];
 			$email = $_POST["email"];
@@ -118,7 +135,7 @@ try {
 			$stmt = "SELECT count(*) FROM users WHERE name = '$username'";
 			$countName = (int)$pdo->query($stmt)->fetchColumn();
 
-			//ユーザーネームの重複を確認
+			//メールアドレスの重複を確認
 			$stmt = "SELECT count(*) FROM users WHERE email = '$email'";
 			$countEmail = (int)$pdo->query($stmt)->fetchColumn();
 
@@ -144,8 +161,6 @@ try {
 				exit(1); //上で他のページへ飛んでいるので、ここで処理を終わらせておく
 			}
 
-	    } else if($_POST["password"] != $_POST["password2"]) {
-	        $errorMessage = 'パスワードが一致しません';
 	    }
 	}
 	//新規登録終わり

@@ -29,27 +29,49 @@ try {
 
 	//ユーザー名・メールアドレス編集機構
 	if (!empty($_POST["edit02"])) { //ユーザー名・メールアドレスの送信があったら
+
+		//ユーザー名に @ が含まれているかどうか
+		$temp = strpos($_POST["newusername"], "@");
+
 		if (empty($_POST["newusername"])) {
 			$errorMessage2 = "新しいユーザー名を記入してください";
+
 		} elseif (empty($_POST["newemail"])) {
 			$errorMessage2 = "新しいメールアドレスを記入してください";
+
 		} elseif (empty($_POST["password"])) {
 			$errorMessage2 = "現在のパスワードを記入してください";
-		}
 
-		if (!empty($_POST["newusername"]) and !empty($_POST["newemail"]) and !empty($_POST["password"])) {
+		} elseif ($temp !== false) { //ユーザー名に @ が含まれる場合
+			$errorMessage = 'ユーザー名に @ は使えません';
+
+		} elseif (!strpos($_POST["newemail"], "@")) { //メールアドレスに @ が含まれない場合
+			$errorMessage = '有効なメールアドレスを入力してください';
+
+		} else {
+
 			$newname = $_POST["newusername"];
 			$newemail = $_POST["newemail"];
 			$hashpass = hash("sha256", $_POST["password"]);
 
-			if ($password == $hashpass) {
+			if ($password === $hashpass) {
+
 				//ユーザーネームの重複を確認
 				$stmt = "SELECT * FROM users WHERE name = '$newname'";
 				$count = (int)$pdo->query($stmt)->fetchColumn();
 
-				if ($count > 0 and $username !== $newname) { //重複かつ違うユーザー名を指定した場合
+				//メールアドレスの重複を確認
+				$stmt = "SELECT count(*) FROM users WHERE email = '$newemail'";
+				$countEmail = (int)$pdo->query($stmt)->fetchColumn();
+
+				if ($count > 0 && $username !== $newname) { //重複かつ違うユーザー名を指定した場合
 					$errorMessage2 = 'そのユーザー名は既に使用されています';
+
+				} elseif ($countEmail > 0 && $email !== $newemail) { //重複かつ違うメールアドレスを指定した場合
+					$errorMessage2 = 'そのメールアドレスは既に使用されています';
+
 				} else {
+
 					// 編集させる
 					$sql = "update users set name='$newname', email='$newemail' where name='$username'";
 					$result = $pdo->query($sql);
@@ -61,11 +83,16 @@ try {
 					$username = $_SESSION["name"];
 					$email = $newemail;
 					$successMessage = "正しく変更されました！";
+					
+
 				}
+
 			} else {
 				$errorMessage2 = "パスワードが違います";
 			}
+
 		}
+
 	}
 
 	//パスワード編集機構
@@ -214,11 +241,10 @@ try {
 		  $sql = "SELECT * FROM post WHERE user = '$username' ORDER BY id DESC" ;
 		  $results = $pdo -> query($sql) ;
 		  foreach ($results as $row) {
-			  //URLを取得
-			  $pageUrl = md5($row['title'] . $row['datetime']);
 
 			  //変数に代入
 			  $id = $row['id'];
+			  $title = urlencode($row['title']);
 
 			  //その投稿に対するコメント数を取得
 			  $stmt = "SELECT COUNT(*) FROM comment WHERE pageID = '$id'" ;
@@ -229,7 +255,7 @@ try {
 			  $datetime02 = explode(":", $datetime01[2]); //日+時[0], 分[1], 秒以下[2]に分割
 			  $datetimeMinute = $datetime01[0] . "/" . $datetime01[1] . "/" . $datetime02[0] . ":" . $datetime02[1];
 
-			  echo '<a href="/PS1BBS/posts/'.$pageUrl.'.php"><table><thead><tr>' ;
+			  echo '<a href="/PS1BBS/template.php?id=' . $id . '&title=' . $title . '"><table><thead><tr>' ;
 			  echo '<th><i class="fas fa-thumbs-up"></i> <i class="fas fa-thumbs-down"></i></th>';
 			  echo '<td class="tag"><i class="fas fa-tag"></i> ' .  $row['label'] . '</td>';
 			  echo '<td class="username"><i class="fas fa-user"></i> ' . h($row['user']) . '</td>';
@@ -239,7 +265,7 @@ try {
 			  echo '<td colspan="2" class="title"> ' . h($row['title']) . '</td>';
 			  echo '<td><i class="fas fa-comments"></i> ' . $count . '</td>';
 			  echo '</tr></tbody></table></a>';
-			  echo '<h5 class="post-delete"><a href="finalAnswer.php?id=' . $id . '">上の投稿を削除する</a></h5><br>';
+			  echo '<div class="post-delete"><a href="finalAnswer.php?id=' . $id . '">上の投稿を削除する</a></div><br>';
 		  } ;
 	  ?>
   </div>
