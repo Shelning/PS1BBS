@@ -87,7 +87,6 @@ try {
           <?php } ?>
         </ul>
       </div>
-      <!--/.nav-collapse -->
     </div>
   </div>
 
@@ -95,38 +94,7 @@ try {
       <?php include("banner.html"); ?>
   </div>
 
-
-  <!-- PORTFOLIO SECTION -->
-  <!---
-  <div id="dg">
-    <div class="container">
-      <div class="row centered">
-        <h4>投稿一覧</h4>
-        <br>
-  --->
-
     <div class="main">
-        <!--
-            <a href="#">
-              <table>
-                  <thead>
-                    <tr>
-                      <th><i class="fas fa-thumbs-up"></i> 5</th>
-                      <td class="tag"><i class="fas fa-tag"></i> 釣りタイトル</td>
-                      <td class="username"><i class="fas fa-user"></i> Shoma</td>
-                      <td><i class="fas fa-clock"></i> 2018/11/20 4:35:50</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th><i class="fas fa-thumbs-down"></i> 2</th>
-                      <td colspan="2" class="title">新種ポケモン発見</td>
-                      <td><i class="fas fa-comments"></i> 2</td>
-                    </tr>
-                  </tbody>
-                </table>
-            </a>
-        -->
 
         <?php
             $sql = 'SELECT * FROM post ORDER BY id DESC' ;
@@ -136,6 +104,7 @@ try {
                 //変数に代入
                 $id = $row['id'];
                 $title = urlencode($row['title']);
+                $rating = $row['rating'];
 
                 //その投稿に対するコメント数を取得
                 $stmt = "SELECT COUNT(*) FROM comment WHERE pageID = '$id'" ;
@@ -146,8 +115,15 @@ try {
                 $datetime02 = explode(":", $datetime01[2]); //日+時[0], 分[1], 秒以下[2]に分割
                 $datetimeMinute = $datetime01[0] . "/" . $datetime01[1] . "/" . $datetime02[0] . ":" . $datetime02[1];
 
+                //評価がマイナスかプラスか
+                if ($rating < 0) {
+                    $rateIcon = '<i class="fas fa-thumbs-down"></i>';
+                } else {
+                    $rateIcon = '<i class="fas fa-thumbs-up"></i>';
+                }
+
             	echo '<a href="/PS1BBS/template.php?id=' . $id . '&title=' . $title . '"><table><thead><tr>' ;
-            	echo '<th><i class="fas fa-thumbs-up"></i> <i class="fas fa-thumbs-down"></i></th>';
+            	echo '<th>' . $rateIcon . '</th>';
                 echo '<td class="tag"><i class="fas fa-tag"></i> ' .  $row['label'] . '</td>';
                 echo '<td class="username"><i class="fas fa-user"></i> ' . h($row['user']) . '</td>';
                 echo '<td><i class="fas fa-clock"></i> ' . $datetimeMinute . '</td>';
@@ -160,31 +136,29 @@ try {
         ?>
 
         <!-- 消しちゃった瀬川さんの投稿 -->
-        <a href="/PS1BBS/posts/3f22dad9ae7626ed03c6fa87d0segawa.php">
-          <table>
-              <thead>
-                <tr>
-                  <th><i class="fas fa-thumbs-up"></i> <i class="fas fa-thumbs-down"></i></th>
-                  <td class="tag"><i class="fas fa-tag"></i> 議論</td>
-                  <td class="username"><i class="fas fa-user"></i> segawa</td>
-                  <td><i class="fas fa-clock"></i> 2018/11/18 以下不明</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th> 1pt</th>
-                  <td colspan="2" class="title">野良連合がRogueを破り世界TOP4入り</td>
-                  <td><i class="fas fa-comments"></i> 1</td>
-                </tr>
-              </tbody>
-            </table>
-        </a>
+        <!-- 以下テーブルの雛形
+            <a href="/PS1BBS/posts/3f22dad9ae7626ed03c6fa87d0segawa.php">
+              <table>
+                  <thead>
+                    <tr>
+                      <th><i class="fas fa-thumbs-up"></i> <i class="fas fa-thumbs-down"></i></th>
+                      <td class="tag"><i class="fas fa-tag"></i> 議論</td>
+                      <td class="username"><i class="fas fa-user"></i> segawa</td>
+                      <td><i class="fas fa-clock"></i> 2018/11/18 以下不明</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th> 1pt</th>
+                      <td colspan="2" class="title">野良連合がRogueを破り世界TOP4入り</td>
+                      <td><i class="fas fa-comments"></i> 1</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </a>
+        END 雛形 -->
 
-      <!-- /.row -->
-    <!--- </div> --->
-    <!-- container -->
-  </div>
-  <!-- DG -->
+    </div>
 
   <div id="footer">
       <div id="copyrights">

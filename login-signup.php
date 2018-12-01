@@ -2,7 +2,7 @@
 include 'database.php'; //データベース情報
 
 if (isset($_SESSION["name"])) {
-	echo "Redirecting to the top page in 3 seconds...";
+	echo "3 秒後トップページへリダイレクトします";
 	header("refresh:3;url=index.php");
 	exit(1);
 }
@@ -18,9 +18,6 @@ $pattern = '/\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,100}+\z/i';
 
 // エラーメッセージの初期化
 $errorMessage = "";
-
-//前のページのURL
-$referer = $_SERVER['HTTP_REFERER'];
 
 try {
 
@@ -68,18 +65,9 @@ try {
 					//セッション変数=ページが遷移しても維持される変数(ブラウザを閉じると破棄)
 					$_SESSION["name"] = $username;
 
-					//プロフィールページから飛んできた場合
-					if ($referer === "http://tt-576.99sv-coco.com/PS1BBS/profile.php") {
-						header("Location: profile.php");
-						exit(1); //上で他のページへ飛んでいるので、ここで処理を終わらせておく
-					//投稿ごとのページから飛んできた場合
-					} elseif (strpos($referer, "http://tt-576.99sv-coco.com/PS1BBS/posts/") !== false) {
-						header("Location: " . $referer);
-						exit(1);
-					} else {
-						header("Location: index.php");
-						exit(1);
-					}
+					header("Location: index.php");
+					exit(1);
+
 				} else {
 					//認証失敗
 					throw new RuntimeException("パスワードが間違っています");
@@ -97,9 +85,6 @@ try {
 	//新規登録機構
 	if (!empty($_POST["signup"])) { // 登録ボタンが押された場合
 
-		//ユーザー名に @ が含まれているかどうか
-		$temp = strpos($_POST["username"], "@");
-
 		if (empty($_POST["username"])) { //ユーザーネームが空
 	        $errorMessage = 'ユーザーネームを入力してください';
 
@@ -112,10 +97,10 @@ try {
 	    } elseif (empty($_POST["password2"])) { //確認用パスワードが空
 	        $errorMessage = '確認用パスワードを入力してください';
 
-		} elseif ($temp !== false) { //ユーザー名に @ が含まれる場合
+		} elseif (strpos($_POST["username"], "@") !== false) { //ユーザー名に @ が含まれる場合
 			$errorMessage = 'ユーザー名に @ は使えません';
 
-		} elseif (!strpos($_POST["email"], "@")) { //メールアドレスに @ が含まれない場合
+		} elseif (strpos($_POST["email"], "@") === false) { //メールアドレスに @ が含まれない場合
 			$errorMessage = '有効なメールアドレスを入力してください';
 
 	    } elseif (!preg_match($pattern, $_POST["password"])) { //パスワードがパターンに一致しない場合
@@ -156,8 +141,9 @@ try {
 
 				//セッション変数=ページが遷移しても維持される変数(ブラウザを閉じると破棄)
 				$_SESSION["name"] = $username;
-				echo "Your new account has been successfully registered!".'<br>';
-				echo "Redirecting to the top page in 5 seconds...";
+				echo "新しいアカウントを作成しました！".'<br>';
+				echo "5 秒後にトップページへ移動します";
+				header("refresh:5;url=index.php");
 				exit(1); //上で他のページへ飛んでいるので、ここで処理を終わらせておく
 			}
 

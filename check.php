@@ -87,7 +87,7 @@ try {
 			//すべて入力されている場合
 			} elseif (!empty($_POST["checkUser"]) && !empty($_POST["checkEmail"]) && !empty($_POST["checkPass"])) {
 				throw new RuntimeException("全部わかってるんなら書くなや");
-				
+
 			//1つだけ入力されている場合
 			} else {
 				throw new RuntimeException("覚えているものを「2つ」入力してください");
@@ -123,8 +123,8 @@ try {
 				$_SESSION = array();
 				session_destroy();
 				setcookie(session_name(), '', time()-42000, '/');
-				echo "Your password has been properly changed!".'<br>';
-				echo "Redirecting to the login page in 5 seconds...";
+				echo "パスワードが正しく変更されました！".'<br>';
+				echo "5 秒後ログインページへリダイレクトします";
 				header("refresh:5;url=login-signup.php");
 				exit(1);
 

@@ -3,18 +3,10 @@ include 'database.php'; //データベース情報
 
 //ログインしているかどうか
 if (!isset($_SESSION["name"])) {
-	echo "Redirecting to the login page in 3 seconds...";
+	echo "3 秒後ログインページへリダイレクトします";
 	header("refresh:3;url=login-signup.php");
 	exit(1);
 }
-
-// エラーメッセージ、成功メッセージの初期化
-$errorMessage = "";
-$errorMessage2 = "";
-$successMessage = "";
-
-//半角英数字をそれぞれ1種類以上含む8文字以上100文字以下の正規表現
-$pattern = '/\A(?=.*?[a-z])(?=.*?\d)[a-z\d]{8,100}+\z/i';
 
 //セッションからユーザー名を取る
 $username = $_SESSION["name"];
@@ -27,123 +19,11 @@ try {
 	$email = $row['email'];
 	$password = $row['password'];
 
-	//ユーザー名・メールアドレス編集機構
-	if (!empty($_POST["edit02"])) { //ユーザー名・メールアドレスの送信があったら
-
-		//ユーザー名に @ が含まれているかどうか
-		$temp = strpos($_POST["newusername"], "@");
-
-		if (empty($_POST["newusername"])) {
-			$errorMessage2 = "新しいユーザー名を記入してください";
-
-		} elseif (empty($_POST["newemail"])) {
-			$errorMessage2 = "新しいメールアドレスを記入してください";
-
-		} elseif (empty($_POST["password"])) {
-			$errorMessage2 = "現在のパスワードを記入してください";
-
-		} elseif ($temp !== false) { //ユーザー名に @ が含まれる場合
-			$errorMessage = 'ユーザー名に @ は使えません';
-
-		} elseif (!strpos($_POST["newemail"], "@")) { //メールアドレスに @ が含まれない場合
-			$errorMessage = '有効なメールアドレスを入力してください';
-
-		} else {
-
-			$newname = $_POST["newusername"];
-			$newemail = $_POST["newemail"];
-			$hashpass = hash("sha256", $_POST["password"]);
-
-			if ($password === $hashpass) {
-
-				//ユーザーネームの重複を確認
-				$stmt = "SELECT * FROM users WHERE name = '$newname'";
-				$count = (int)$pdo->query($stmt)->fetchColumn();
-
-				//メールアドレスの重複を確認
-				$stmt = "SELECT count(*) FROM users WHERE email = '$newemail'";
-				$countEmail = (int)$pdo->query($stmt)->fetchColumn();
-
-				if ($count > 0 && $username !== $newname) { //重複かつ違うユーザー名を指定した場合
-					$errorMessage2 = 'そのユーザー名は既に使用されています';
-
-				} elseif ($countEmail > 0 && $email !== $newemail) { //重複かつ違うメールアドレスを指定した場合
-					$errorMessage2 = 'そのメールアドレスは既に使用されています';
-
-				} else {
-
-					// 編集させる
-					$sql = "update users set name='$newname', email='$newemail' where name='$username'";
-					$result = $pdo->query($sql);
-
-					//現在のセッションIDを新しく生成したものと置き換える。セキュリティ上重要
-					session_regenerate_id(true);
-
-					$_SESSION["name"] = $newname;
-					$username = $_SESSION["name"];
-					$email = $newemail;
-					$successMessage = "正しく変更されました！";
-					
-
-				}
-
-			} else {
-				$errorMessage2 = "パスワードが違います";
-			}
-
-		}
-
-	}
-
-	//パスワード編集機構
-	if (!empty($_POST["passedit02"])) { //パスワードの送信があったら
-		if (empty($_POST["password"])) {
-			$errorMessage = "現在のパスワードを記入してください";
-		} elseif (empty($_POST["newpassword"])) {
-			$errorMessage = "新しいパスワードを記入してください";
-		} elseif (!preg_match($pattern, $_POST["newpassword"])) { //パスワードがパターンに一致しない場合
-			$errorMessage = "パスワードは8文字以上で、半角英字と半角数字をそれぞれ最低1つ含む必要があります";
-		}
-
-		if (!empty($_POST["password"]) and !empty($_POST["newpassword"]) and preg_match($pattern, $_POST["newpassword"])) {
-			$newpass = $_POST["newpassword"];
-			$hashpass = hash("sha256", $_POST["password"]);
-
-			if ($password == $hashpass) {
-				// 編集させる
-				$new_hashpass = hash("sha256", $newpass);
-				$sql = "update users set password='$new_hashpass' where name='$username'";
-				$result = $pdo->query($sql);
-
-			    //ページを遷移しない場合の処理
-			    //現在のセッションIDを新しく生成したものと置き換える。セキュリティ上重要
-				//session_regenerate_id(true);
-				//$_SESSION["name"] = $username;
-				//$successMessage = "正しく変更されました！";
-
-			    //ページを遷移する場合の処理(強制ログアウト)
-				$_SESSION = array();
-				session_destroy();
-				setcookie(session_name(), '', time()-42000, '/');
-				echo "Your password has been properly changed!".'<br>';
-				echo "Redirecting to the login page in 5 seconds...";
-				header("refresh:5;url=login-signup.php");
-				exit(1);
-
-			} else {
-				$errorMessage = "パスワードが違います";
-			}
-		}
-	}
-
 } catch (PDOException $e) {
 	$errorMessage = 'データベースエラー';
 	// $e->getMessage() でエラー内容を参照可能
 	// echo $e->getMessage();
 } //try終了
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -235,7 +115,7 @@ try {
 		  </table>
 	  </div>
 
-	  <h4 class="top-main_a"><a href="#accountEdit">ユーザー名・メールアドレス・パスワードを変更する</a></h4>
+	  <h4 class="top-main_a"><a href="accountEdit.php">ユーザー名・メールアドレス・パスワードを変更する</a></h4>
 	  <h2 class="h2h2">これまでの投稿</h2>
 	  <?php
 		  $sql = "SELECT * FROM post WHERE user = '$username' ORDER BY id DESC" ;
@@ -270,61 +150,6 @@ try {
 	  ?>
   </div>
 
-  <div class="float-container2" id="accountEdit">
-
-	  <div class="login-container">
-		  <h2 class="h2h2">ユーザー名・メールアドレスの変更</h2>
-		  メールアドレスは認証がないので、適当で大丈夫です。
-		  <form action="" method="post">
-			  <div class="post-form">
-				   <h3>新しいユーザー名</h3>
-				   <input class="text-input-2" type="text" name="newusername" placeholder="新しいユーザー名を入力" value="<?php if (empty($_POST["newusername"])) { echo h($username);
-							  } else {
-								echo h($_POST["newusername"]);}
-						?>">
-			  </div>
-			  <div class="post-form">
-				   <h3>新しいメールアドレス</h3>
-				   <input class="text-input-2" type="email" name="newemail" placeholder="新しいメールアドレスを入力" value="<?php if (empty($_POST["newemail"])) {
-							   echo h($email);
-						 } else {
-						   echo h($_POST["newemail"]);}
-				   ?>">
-			  </div>
-			  <div class="post-form">
-				   <h3>現在のパスワード</h3>
-				   <input class="text-input-2" type="password" name="password" value="" placeholder="現在のパスワードを入力" required>
-			  </div>
-			  <br>
-			  <div class="errorMessage"><?php echo h($errorMessage2); ?></div>
-			  <div class="successMessage"><?php echo h($successMessage); ?></div>
-			  <br>
-			  <div class="submit"><input type="submit" name="edit02" value="変更する"></div>
-		  </form>
-	  </div>
-
-	  <div class="signup-container">
-		  <h2 class="h2h2">パスワードの変更</h2>
-		  パスワードはハッシュ化されていますが、あまり安全ではありません。重要な文字列は入力しないでください。
-		  <br>
-		  パスワードは8文字以上で、半角英字と半角数字をそれぞれ最低1つ含む必要があります。
-		  <form action="" method="post">
-			  <div class="post-form">
-				   <h3>現在のパスワード</h3>
-				   <input class="text-input-2" type="password" name="password" value="" placeholder="現在のパスワードを入力" required>
-			  </div>
-			  <div class="post-form">
-				   <h3>新しいパスワード</h3>
-				   <input class="text-input-2" type="password" name="newpassword" value="" placeholder="新しいパスワードを入力" required>
-			  </div>
-			  <br>
-			  <div class="errorMessage"><?php echo h($errorMessage); ?></div>
-			  <br>
-			  <div class="submit"><input type="submit" name="passedit02" value="変更する"></div>
-		  </form>
-	  </div>
-
-  </div>
 
 	<div id="footer">
 	  <div id="copyrights">

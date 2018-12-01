@@ -30,12 +30,31 @@ try {
         $datetime02 = explode(":", $datetime01[2]); //日+時[0], 分[1], 秒以下[2]に分割
         $datetimeMinute = $datetime01[0] . "/" . $datetime01[1] . "/" . $datetime02[0] . ":" . $datetime02[1];
 
-        //ファイルの拡張子を調べる
-        $extensionCheck = explode(".", $filename);
-        if ($extensionCheck[1] === "mp4") {
-            $filetype = "video";
+        //$filename がファイルかYouTube動画か確認する
+        if (strpos($filename, "https://www.youtube.com/watch?v=") === false) {
+
+            //ファイルの拡張子を調べる
+            $extensionCheck = explode(".", $filename);
+            if ($extensionCheck[1] === "mp4") {
+                $filetype = "video";
+            } else {
+                $filetype = "image";
+            }
+
         } else {
-            $filetype = "image";
+
+            $filetype = "youtube";
+            $urlSegment = explode("/", $filename); //[0]https: [2]www.youtube.com
+            $youtubeID = explode("?v=", $filename); //[1]固有ID
+            $filename = $urlSegment[0] . "//" . $urlSegment[2] . "/embed/" . $youtubeID[1];
+
+        }
+
+        //評価がマイナスかプラスか
+        if ($rating < 0) {
+            $rateIcon = '<i class="fas fa-thumbs-down"></i> ';
+        } else {
+            $rateIcon = '<i class="fas fa-thumbs-up"></i> ';
         }
 
     }
@@ -156,12 +175,6 @@ try {
       </div>
     </div>
 
-
-    <div class="banner">
-        <?php include("banner.html"); //PHPの中では PS1BBS がカレント ?>
-    </div>
-
-
     <div class="main">
 
         <?php
@@ -170,7 +183,14 @@ try {
             } else {
         ?>
 
-        <h2><?php echo h($title); ?></h2>
+        <span class="post-title"><?php echo h($title); ?></span>
+        <span class="user-date03">
+            <?php
+                echo $rateIcon . $rating;
+            ?>
+        </span>
+
+        <br>
 
         <span class="user-date01">
             <?php
@@ -180,8 +200,12 @@ try {
         </span>
         <span class="user-date02">
             <?php
-                echo '<i class="fas fa-clock"></i> ';
-                echo $datetimeMinute;
+                echo '<i class="fas fa-tag"></i> ' . $label;
+            ?>
+        </span>
+        <span class="user-date02">
+            <?php
+                echo '<i class="fas fa-clock"></i> ' . $datetimeMinute;
             ?>
         </span>
 
@@ -195,9 +219,11 @@ try {
         <div class="uploaded-file">
             <?php
                 if ($filetype === "video") {
-                    echo '<video  id="posted-video" src="files/' . $filename . '" controls autoplay muted></video>';
+                    echo '<video id="posted-video" src="files/' . $filename . '" controls autoplay muted></video>';
+                } elseif ($filetype === "youtube") {
+                    echo '<div class="youtube-video"><iframe src="' . $filename . '" frameborder="0" allowfullscreen></iframe></div>';
                 } else {
-                    echo '<img id="posted-img" src="files/' . $filename . '">';
+                    echo '<a href="files/' . $filename . '"><img id="posted-img" src="files/' . $filename . '"></a>';
                 }
             ?>
         </div>
@@ -234,8 +260,8 @@ try {
 
                         // echo $row['id'].',' ;
                         // echo $row['pageID'].',';
-                        echo '<table><tbody><tr><td>' . h($row['user']) . '</td>';
-                        echo '<td>' . $row['datetime'] . '</td></tr></tbody>';
+                        echo '<table><tbody><tr><td><i class="fas fa-user"></i> ' . h($row['user']) . '</td>';
+                        echo '<td><i class="fas fa-clock"></i> ' . $row['datetime'] . '</td></tr></tbody>';
                         echo '<tbody><tr><td colspan="2" class="posted-comment-comment">' . $comment;
                         if (h($row['user']) === $username) {
                             $id = $row['id'];
@@ -294,7 +320,7 @@ try {
             </div>
         </div>
 
-        <?php } ?>
+    <?php } //END 投稿が存在するかどうか ?>
 
     </div>
 

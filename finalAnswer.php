@@ -3,7 +3,7 @@ include 'database.php'; //データベース情報
 
 //ログインしているかどうか
 if (!isset($_SESSION["name"])) {
-	echo "Redirecting to the login page in 3 seconds...";
+	echo "3 秒後ログインページへリダイレクトします";
 	header("refresh:3;url=login-signup.php");
 	exit(1);
 }

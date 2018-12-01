@@ -2,8 +2,8 @@
 include 'database.php'; //データベース情報
 
 if (!isset($_SESSION["name"])) {
-	echo "You have to log in to post".'<br>';
-	echo "Redirecting to the top page in 5 seconds...";
+	echo "投稿するにはログインする必要があります".'<br>';
+	echo "5 秒後ログインページへリダイレクトします";
 	header("refresh:5;url=index.php");
 	exit(1);
 }
@@ -38,11 +38,19 @@ try {
 
 			if (empty($_POST["title"])) {
 				throw new RuntimeException('タイトルを入力してください');
-			} elseif ($_POST["label"] === "none") {
-				throw new RuntimeException('ラベルを選択してください');
-			}
 
-			if ($_FILES['upfile']['error'] !== 4) { //UPLOAD_ERR_NO_FILE(4)
+			} elseif ($_POST["label"] === "none") {
+				throw new RuntimeException('タグを選択してください');
+
+			//YouTube動画とファイル両方に入力がある場合
+			} elseif (!empty($_POST["youtube"]) && $_FILES['upfile']['error'] !== 4) {
+				throw new RuntimeException('ファイルとYouTube動画を同時に送ることはできません<br>どちらか片方にしてください');
+
+			//YouTube動画のURLが正しくない場合
+			} elseif (strpos($_POST["youtube"], "https://www.youtube.com/watch?v=") === false) {
+				throw new RuntimeException('入力されたURLはYouTubeの動画ではありません');
+
+			} elseif ($_FILES['upfile']['error'] !== 4) { //UPLOAD_ERR_NO_FILE(4)
 
 				if (!isset($_FILES['upfile']['error']) || !is_int($_FILES['upfile']['error'])) {
 					throw new RuntimeException('パラメータが不正です');
@@ -81,7 +89,7 @@ try {
 				    	throw new RuntimeException("ファイルをアップロードできませんでした");
 					}
 
-				}
+				} //END ファイルアップロード機構
 
 			}
 
@@ -93,7 +101,21 @@ try {
 			$sql -> bindValue(':user', $username, PDO::PARAM_STR) ;
 			$sql -> bindValue(':title', $_POST["title"], PDO::PARAM_STR) ;
 			$sql -> bindValue(':text', $_POST["text"], PDO::PARAM_STR) ;
-			$sql -> bindValue(':filename', $filename, PDO::PARAM_STR) ;
+
+			//ファイルが送信された場合
+			if ($_FILES['upfile']['error'] !== 4 && empty($_POST["youtube"])) {
+				$sql -> bindValue(':filename', $filename, PDO::PARAM_STR) ;
+
+			//YouTube動画のURLが送信された場合
+			} elseif ($_FILES['upfile']['error'] === 4 && !empty($_POST["youtube"])) {
+
+				//URLに含まれる時間指定を消したい場合
+				//$youtube = explode("=", $_POST["youtube"]);
+				//$youtube = $youtube[0] . $youtube[1];
+
+				$sql -> bindValue(':filename', $_POST["youtube"], PDO::PARAM_STR) ;
+			}
+
 			$sql -> bindValue(':thumbnail', "disabled", PDO::PARAM_STR) ; //現在未実装
 			$sql -> bindValue(':datetime', $datetime, PDO::PARAM_STR) ;
 			$sql -> bindValue(':label', $_POST["label"], PDO::PARAM_STR) ;
@@ -174,23 +196,8 @@ try {
 			<li><a href="logout.php">LOGOUT</a></li>
         </ul>
       </div>
-      <!--/.nav-collapse -->
     </div>
   </div>
-
-  <div class="banner">
-      <?php include("banner.html"); ?>
-  </div>
-
-
-  <!-- PORTFOLIO SECTION -->
-  <!---
-  <div id="dg">
-    <div class="container">
-      <div class="row centered">
-        <h4>投稿一覧</h4>
-        <br>
-  --->
 
     <div class="main">
     	<form action="" method="post" enctype="multipart/form-data">
@@ -209,50 +216,31 @@ try {
                 <input class="text-input" type="file" name="upfile">
         		<span id="condition">※条件: 50MB以内, JPEG, PNG, GIF, MP4のいずれか</span>
             </div>
+			<div class="post-form">
+				 <h3>YouTube動画</h3>
+				 <input class="text-input" type="url" name="youtube" placeholder="https://www.youtube.com/watch?v=(固有ID)" value="<?php if (!empty($_POST["youtube"])) {echo h($_POST["youtube"]);} ?>">
+				 <br>
+				 <span id="condition">※ファイルと一緒には送信できません</span>
+			</div>
             <div class="post-form">
-        		<h3>ラベル*</h3>
+        		<h3>タグ*</h3>
     			<select name="label">
     				<option value="none" selected></option>
-    				<option value="釣りタイトル">釣りタイトル</option>
-    				<option value="議論">議論</option>
-    				<option value="おもしろ">おもしろ</option>
-    				<option value="質問">質問</option>
-                    <option value="プレイ動画">プレイ動画</option>
 					<option value="ニュース">ニュース</option>
+					<option value="おもしろ">おもしろ</option>
+					<option value="プレイ画像">プレイ画像</option>
+					<option value="プレイ動画">プレイ動画</option>
+					<option value="スクリーンショット">スクリーンショット</option>
+    				<option value="釣りタイトル">釣りタイトル</option>
+					<option value="質問">質問</option>
+    				<option value="議論">議論</option>
+					<option value="その他">その他</option>
     			</select>
             </div>
 
-            <div class="errorMessage"><?php echo h($errorMessage); ?></div>
+            <div class="errorMessage"><?php echo $errorMessage; ?></div>
             <div class="submit"><input type="submit" name="submit" value="送信"></div>
     	</form>
-
-
-        <!--
-            <a href="#">
-              <table>
-                  <thead>
-                    <tr>
-                      <th><i class="fas fa-thumbs-up"></i> 5</th>
-                      <td class="tag"><i class="fas fa-tag"></i> 釣りタイトル</td>
-                      <td class="username"><i class="fas fa-user"></i> Shoma</td>
-                      <td><i class="fas fa-clock"></i> 2018/11/20 4:35:50</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th><i class="fas fa-thumbs-down"></i> 2</th>
-                      <td colspan="2" class="title">新種ポケモン発見</td>
-                      <td><i class="fas fa-comments"></i> 2</td>
-                    </tr>
-                  </tbody>
-                </table>
-            </a>
-        -->
-
-
-      <!-- /.row -->
-    <!--- </div> --->
-    <!-- container -->
   </div>
 
   <div id="copyrights">
