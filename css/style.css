@@ -164,6 +164,15 @@ hr {
     width: 100%; /* 横幅100%　*/
 }
 
+.thumbs input {
+    width: 20px;
+    color: green;
+    vertical-align: middle;
+}
+.thumbs input:hover, .thumbs input:focus {
+  color: #f85c37;
+}
+
 #posted-img {
     max-width: 100%;
     height: auto;
@@ -172,6 +181,20 @@ hr {
     max-width: 100%;
     height: auto;
 }
+.youtube-video {
+    position: relative;
+    width:100%;
+    padding-top:56.25%;
+}
+.youtube-video iframe {
+    position:absolute;
+    top:0;
+    right:0;
+    width: 100%;
+    height: 100%;
+}
+
+
 
 
 /* Dark Grey Wrap */
@@ -212,6 +235,14 @@ hr {
 }
 .main h2 {
     font-family: "Raleway";
+    font-weight: 300;
+    color: #333;
+    text-align: left;
+    padding: 0 20px;
+}
+.post-title {
+    font-family: "Raleway";
+    font-size: 24pt;
     font-weight: 300;
     color: #333;
     text-align: left;
@@ -276,8 +307,7 @@ hr {
     /*text-align: left;*/
 }
 .top-main_a {
-    margin-right: 20px;
-    text-align: right;
+    text-align: center;
     font-weight: bold;
 }
 .float-container2{
@@ -303,6 +333,11 @@ hr {
 .user-date02 {
     text-align: left;
     padding-left: 10px;
+    font-size: 12pt;
+}
+
+.user-date03 {
+    text-align: left;
     font-size: 12pt;
 }
 
