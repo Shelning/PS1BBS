@@ -47,7 +47,7 @@ try {
 				throw new RuntimeException('ファイルとYouTube動画を同時に送ることはできません<br>どちらか片方にしてください');
 
 			//YouTube動画のURLが正しくない場合
-			} elseif (strpos($_POST["youtube"], "https://www.youtube.com/watch?v=") === false) {
+			} elseif (!empty($_POST["youtube"]) && strpos($_POST["youtube"], "https://www.youtube.com/watch?v=") === false) {
 				throw new RuntimeException('入力されたURLはYouTubeの動画ではありません');
 
 			} elseif ($_FILES['upfile']['error'] !== 4) { //UPLOAD_ERR_NO_FILE(4)
@@ -114,6 +114,12 @@ try {
 				//$youtube = $youtube[0] . $youtube[1];
 
 				$sql -> bindValue(':filename', $_POST["youtube"], PDO::PARAM_STR) ;
+
+			//ファイルがなにもない場合
+			} else {
+
+				$sql -> bindValue(':filename', "", PDO::PARAM_STR) ;				
+
 			}
 
 			$sql -> bindValue(':thumbnail', "disabled", PDO::PARAM_STR) ; //現在未実装

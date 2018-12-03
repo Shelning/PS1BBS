@@ -35,10 +35,20 @@ try {
 
             //ファイルの拡張子を調べる
             $extensionCheck = explode(".", $filename);
-            if ($extensionCheck[1] === "mp4") {
-                $filetype = "video";
-            } else {
-                $filetype = "image";
+            switch ($extensionCheck[1]) {
+
+                case "mp4":
+                    $filetype = "video";
+                    break;
+                case "jpeg":
+                case "png":
+                case "gif":
+                    $filetype = "image";
+                    break;
+                default:
+                    $filetype = "nothing";
+                    break;
+
             }
 
         } else {
@@ -222,8 +232,10 @@ try {
                     echo '<video id="posted-video" src="files/' . $filename . '" controls autoplay muted></video>';
                 } elseif ($filetype === "youtube") {
                     echo '<div class="youtube-video"><iframe src="' . $filename . '" frameborder="0" allowfullscreen></iframe></div>';
-                } else {
+                } elseif ($filetype === "image") {
                     echo '<a href="files/' . $filename . '"><img id="posted-img" src="files/' . $filename . '"></a>';
+                } else {
+
                 }
             ?>
         </div>
